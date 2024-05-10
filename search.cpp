@@ -4,9 +4,9 @@
 #include <ctime>
 using namespace std;
 
-int iterativeSearch(vector<int>v, int elem){
+int iterativeSearch(vector<int> v, int elem){
     int i;
-    for(i = 0; i = SIZE; i++){
+    for(i = 0; i = v.size(); i++){
         if(v[i] == elem){
             return i;
         }
@@ -15,10 +15,60 @@ int iterativeSearch(vector<int>v, int elem){
 }
 
 int binarySearch(vector<int> & v, int start, int end, int elem){
-    int mid;
-    if(elem = mid){
+    if(start > end){
         return -1;
-    }else{
-        
+    }
+
+    int mid = (start + end / 2);
+
+    if(v[mid] > elem){
+        end = mid - 1;
+    } else if(v[mid] < elem){
+        start = mid + 1;
+    } else {
+        return mid;
+    }
+    return binarySearch(v, start, end, elem);
+
+}
+
+void vecGen(string filename, vector<int> & v){
+    ifstream file(filename);
+    int num;
+    v.clear();
+    while(file.is_open() && file >> num){
+        v.push_back(num);
+    }
+    file.close();
+}
+
+int main(){
+    vector<int> v;
+    vecGen("10000_number.csv", v);
+
+    vector<int> elem_to_find;
+    vecGen("test_elem.csv", elem_to_find);
+
+    for(int i = 0; i < elem_to_find.size(); i++){
+        int elem = elem_to_find[i];
+
+        clock_t start = clock();
+        int index_if_found = iterativeSearch(v, elem);
+        clock_t end = clock();
+
+        double elapsed_time_in_sec = (double(end - start)/CLOCKS_PER_SEC);
+
+        cout << index_if_found << ": " << elapsed_time_in_sec << endl;
+    }
+    for(int i = 0; i < elem_to_find.size(); i++){
+        int elem = elem_to_find[i];
+
+        clock_t start = clock();
+        int index_if_found = binarySearch(v, start, end, elem);
+        clock_t end = clock();
+
+        double elapsed_time_in_sec = (double(end - start)/CLOCKS_PER_SEC);
+
+        cout << index_if_found << ": " << elapsed_time_in_sec << endl;
     }
 }
